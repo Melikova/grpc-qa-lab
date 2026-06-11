@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>gRPC QA Test Lab</title>
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0f0f10;
+        color: #e5e5e5;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 60px 20px;
+      }
+
+      h1 {
+        font-size: 40px;
+        color: #ffffff;
+        margin-bottom: 10px;
+      }
+
+      h2 {
+        margin-top: 40px;
+        color: #cfcfcf;
+        font-size: 22px;
+      }
+
+      .card {
+        background: #1a1a1d;
+        padding: 18px;
+        border-radius: 10px;
+        margin-top: 18px;
+        border: 1px solid #2a2a2a;
+      }
+
+      .block {
+        background: #111;
+        padding: 12px;
+        border-left: 3px solid #00ffcc;
+        font-family: monospace;
+        white-space: pre;
+        overflow-x: auto;
+        margin-top: 10px;
+      }
+
+      code {
+        background: #2a2a2a;
+        padding: 2px 6px;
+        border-radius: 4px;
+        color: #00ffcc;
+      }
+
+      .tag {
+        color: #00ffcc;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>gRPC QA Test Lab</h1>
+
+      <p>
+        Minimal gRPC service for QA testing, contract validation, and learning
+        microservice communication.
+      </p>
+
+      <!-- OVERVIEW -->
+      <div class="card">
+        <h2>📦 Services</h2>
+
+        <div class="block">UserService BlacklistService</div>
+
+        <p>
+          This system contains two microservices communicating via
+          <span class="tag">gRPC</span>.
+        </p>
+      </div>
+
+      <!-- ENDPOINTS -->
+      <div class="card">
+        <h2>🌐 Endpoints</h2>
+
+        <div class="block">
+          UserService → localhost:50051 BlacklistService → localhost:50052
+        </div>
+
+        <p>No HTTP endpoints. Communication is protocol-buffer based (gRPC).</p>
+      </div>
+
+      <!-- METHODS -->
+      <div class="card">
+        <h2>📡 Methods (RPC Calls)</h2>
+
+        <div class="block">
+          UserService: GetUser(UserRequest) returns (UserResponse)
+          BlacklistService: CheckBlacklist(BlacklistRequest) returns
+          (BlacklistResponse)
+        </div>
+      </div>
+
+      <!-- MESSAGES -->
+      <div class="card">
+        <h2>📨 Messages (Schema)</h2>
+
+        <div class="block">
+          UserRequest: email (string) UserResponse: email (string) status
+          (string) BlacklistRequest: email (string) BlacklistResponse: blocked
+          (bool)
+        </div>
+      </div>
+
+      <!-- TESTING -->
+      <div class="card">
+        <h2>🧪 How to Test</h2>
+
+        <div class="block">
+          Step 1: Import testlab.proto into Postman (gRPC) Step 2: Select
+          method: UserService / GetUser Step 3: Request: { "email":
+          "bad@email.com" } Step 4: Expected response: { "email":
+          "bad@email.com", "status": "BLOCKED" }
+        </div>
+      </div>
+
+      <!-- BEHAVIOR -->
+      <div class="card">
+        <h2>⚙️ Service Behavior</h2>
+
+        <div class="block">
+          If email is in blacklist: → BLOCKED If email is NOT in blacklist: →
+          ACTIVE Validation is handled by BlacklistService via internal gRPC
+          call.
+        </div>
+      </div>
+
+      <!-- ERROR CASES -->
+      <div class="card">
+        <h2>⚠️ Negative Scenarios</h2>
+
+        <div class="block">
+          Empty email: → validation error Service unavailable: → UNAVAILABLE
+          error Invalid request structure: → proto mismatch error
+        </div>
+      </div>
+
+      <!-- LEARNING -->
+      <div class="card">
+        <h2>📚 QA Focus</h2>
+
+        <div class="block">
+          - Contract-based testing (.proto) - Microservice dependency validation
+          - gRPC communication flow - Data integrity across services
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

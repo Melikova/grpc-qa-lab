@@ -1,0 +1,27 @@
+syntax = 'proto3';
+package testlab;
+
+service UserService{
+    rpc GetUser (UserRequest) returns (UserResponse);
+}
+
+service BlacklistService{
+    rpc CheckBlacklist (BlacklistRequest) returns (BlacklistResponse);
+}
+
+message UserRequest {
+    string email = 1;
+}
+
+message BlacklistRequest {
+    string email = 1;
+}
+
+message UserResponse {
+    string email = 1;
+    string status = 2;
+}
+
+message BlacklistResponse {
+    bool blocked = 1;
+}

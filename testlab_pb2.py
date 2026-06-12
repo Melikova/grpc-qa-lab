@@ -24,23 +24,25 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rtestlab.proto\x12\x07testlab\"\x1c\n\x0bUserRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"!\n\x10\x42lacklistRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"-\n\x0cUserResponse\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12\x0e\n\x06status\x18\x02 \x01(\t\"$\n\x11\x42lacklistResponse\x12\x0f\n\x07\x62locked\x18\x01 \x01(\x08\x32\x45\n\x0bUserService\x12\x36\n\x07GetUser\x12\x14.testlab.UserRequest\x1a\x15.testlab.UserResponse2[\n\x10\x42lacklistService\x12G\n\x0e\x43heckBlacklist\x12\x19.testlab.BlacklistRequest\x1a\x1a.testlab.BlacklistResponseb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rtestlab.proto\x12\x07testlab\"\x1c\n\x0bUserRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"B\n\x0cUserResponse\x12\r\n\x05\x65mail\x18\x01 \x01(\t\x12#\n\x06status\x18\x02 \x01(\x0e\x32\x13.testlab.UserStatus\"!\n\x10\x42lacklistRequest\x12\r\n\x05\x65mail\x18\x01 \x01(\t\"$\n\x11\x42lacklistResponse\x12\x0f\n\x07\x62locked\x18\x01 \x01(\x08*V\n\nUserStatus\x12\x17\n\x13USER_STATUS_UNKNOWN\x10\x00\x12\x16\n\x12USER_STATUS_ACTIVE\x10\x01\x12\x17\n\x13USER_STATUS_BLOCKED\x10\x02\x32\x45\n\x0bUserService\x12\x36\n\x07GetUser\x12\x14.testlab.UserRequest\x1a\x15.testlab.UserResponse2[\n\x10\x42lacklistService\x12G\n\x0e\x43heckBlacklist\x12\x19.testlab.BlacklistRequest\x1a\x1a.testlab.BlacklistResponseb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'testlab_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
+  _globals['_USERSTATUS']._serialized_start=197
+  _globals['_USERSTATUS']._serialized_end=283
   _globals['_USERREQUEST']._serialized_start=26
   _globals['_USERREQUEST']._serialized_end=54
-  _globals['_BLACKLISTREQUEST']._serialized_start=56
-  _globals['_BLACKLISTREQUEST']._serialized_end=89
-  _globals['_USERRESPONSE']._serialized_start=91
-  _globals['_USERRESPONSE']._serialized_end=136
-  _globals['_BLACKLISTRESPONSE']._serialized_start=138
-  _globals['_BLACKLISTRESPONSE']._serialized_end=174
-  _globals['_USERSERVICE']._serialized_start=176
-  _globals['_USERSERVICE']._serialized_end=245
-  _globals['_BLACKLISTSERVICE']._serialized_start=247
-  _globals['_BLACKLISTSERVICE']._serialized_end=338
+  _globals['_USERRESPONSE']._serialized_start=56
+  _globals['_USERRESPONSE']._serialized_end=122
+  _globals['_BLACKLISTREQUEST']._serialized_start=124
+  _globals['_BLACKLISTREQUEST']._serialized_end=157
+  _globals['_BLACKLISTRESPONSE']._serialized_start=159
+  _globals['_BLACKLISTRESPONSE']._serialized_end=195
+  _globals['_USERSERVICE']._serialized_start=285
+  _globals['_USERSERVICE']._serialized_end=354
+  _globals['_BLACKLISTSERVICE']._serialized_start=356
+  _globals['_BLACKLISTSERVICE']._serialized_end=447
 # @@protoc_insertion_point(module_scope)

@@ -1,27 +1,34 @@
-syntax = 'proto3';
+syntax = "proto3";
+
 package testlab;
 
-service UserService{
-    rpc GetUser (UserRequest) returns (UserResponse);
+enum UserStatus {
+  USER_STATUS_UNKNOWN = 0;
+  USER_STATUS_ACTIVE  = 1;
+  USER_STATUS_BLOCKED = 2;
 }
 
-service BlacklistService{
-    rpc CheckBlacklist (BlacklistRequest) returns (BlacklistResponse);
+service UserService {
+  rpc GetUser (UserRequest) returns (UserResponse);
+}
+
+service BlacklistService {
+  rpc CheckBlacklist (BlacklistRequest) returns (BlacklistResponse);
 }
 
 message UserRequest {
-    string email = 1;
-}
-
-message BlacklistRequest {
-    string email = 1;
+  string email = 1;
 }
 
 message UserResponse {
-    string email = 1;
-    string status = 2;
+  string     email  = 1;
+  UserStatus status = 2;
+}
+
+message BlacklistRequest {
+  string email = 1;
 }
 
 message BlacklistResponse {
-    bool blocked = 1;
+  bool blocked = 1;
 }

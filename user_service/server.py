@@ -3,6 +3,10 @@ import logging
 from concurrent import futures
 
 import grpc
+import sys
+import os
+
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 import testlab_pb2
 import testlab_pb2_grpc
 

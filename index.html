@@ -931,25 +931,33 @@
 
 <span class="kw">package</span> testlab;
 
-<span class="cm">// ── UserService ─────────────────────────────</span>
+<span class="cm">// ── Enum ─────────────────────────────────────</span>
+
+<span class="kw">enum</span> <span class="ty">UserStatus</span> {
+  <span class="fn">USER_STATUS_UNKNOWN</span> = <span class="nu">0</span>;
+  <span class="fn">USER_STATUS_ACTIVE</span>  = <span class="nu">1</span>;
+  <span class="fn">USER_STATUS_BLOCKED</span> = <span class="nu">2</span>;
+}
+
+<span class="cm">// ── Services ─────────────────────────────────</span>
 
 <span class="kw">service</span> <span class="ty">UserService</span> {
   <span class="kw">rpc</span> <span class="fn">GetUser</span> (<span class="ty">UserRequest</span>) <span class="kw">returns</span> (<span class="ty">UserResponse</span>);
 }
+
+<span class="kw">service</span> <span class="ty">BlacklistService</span> {
+  <span class="kw">rpc</span> <span class="fn">CheckBlacklist</span> (<span class="ty">BlacklistRequest</span>) <span class="kw">returns</span> (<span class="ty">BlacklistResponse</span>);
+}
+
+<span class="cm">// ── Messages ─────────────────────────────────</span>
 
 <span class="kw">message</span> <span class="ty">UserRequest</span> {
   <span class="ty">string</span> email = <span class="nu">1</span>;
 }
 
 <span class="kw">message</span> <span class="ty">UserResponse</span> {
-  <span class="ty">string</span> email  = <span class="nu">1</span>;
-  <span class="ty">string</span> status = <span class="nu">2</span>;  <span class="cm">// "ACTIVE" | "BLOCKED"</span>
-}
-
-<span class="cm">// ── BlacklistService ─────────────────────────</span>
-
-<span class="kw">service</span> <span class="ty">BlacklistService</span> {
-  <span class="kw">rpc</span> <span class="fn">CheckBlacklist</span> (<span class="ty">BlacklistRequest</span>) <span class="kw">returns</span> (<span class="ty">BlacklistResponse</span>);
+  <span class="ty">string</span>     email  = <span class="nu">1</span>;
+  <span class="ty">UserStatus</span> status = <span class="nu">2</span>;  <span class="cm">// enum — not a raw string</span>
 }
 
 <span class="kw">message</span> <span class="ty">BlacklistRequest</span> {
@@ -1088,7 +1096,7 @@
                       font-size: 12px;
                       color: #00b4d8;
                     "
-                    >STATUS_ACTIVE</code
+                    >USER_STATUS_ACTIVE</code
                   >
                 </td>
               </tr>

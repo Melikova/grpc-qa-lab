@@ -2,163 +2,1292 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>gRPC QA Test Lab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>gRPC QA Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
 
     <style>
-      body {
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
         margin: 0;
-        font-family: Arial, sans-serif;
-        background: #0f0f10;
-        color: #e5e5e5;
-        line-height: 1.6;
+        padding: 0;
       }
 
-      .container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 60px 20px;
+      :root {
+        --bg: #080b10;
+        --surface: #0e1318;
+        --surface2: #141a22;
+        --border: #1e2a36;
+        --accent: #00e5ff;
+        --accent2: #7b5ea7;
+        --pass: #22c55e;
+        --fail: #ef4444;
+        --warn: #f59e0b;
+        --text: #c9d6e3;
+        --text-dim: #5a7080;
+        --text-bright: #eaf2ff;
+        --mono: "JetBrains Mono", monospace;
+        --sans: "Inter", sans-serif;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--sans);
+        font-size: 15px;
+        line-height: 1.7;
+        min-height: 100vh;
+      }
+
+      /* ── HEADER ── */
+      header {
+        border-bottom: 1px solid var(--border);
+        padding: 28px 0 0;
+        position: sticky;
+        top: 0;
+        background: rgba(8, 11, 16, 0.94);
+        backdrop-filter: blur(12px);
+        z-index: 100;
+      }
+
+      .header-inner {
+        max-width: 860px;
+        margin: auto;
+        padding: 0 24px 20px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .logo-block {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .logo-eyebrow {
+        font-family: var(--mono);
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--accent);
       }
 
       h1 {
-        font-size: 40px;
-        color: #ffffff;
+        font-family: var(--mono);
+        font-size: 26px;
+        font-weight: 700;
+        color: var(--text-bright);
+        letter-spacing: -0.5px;
+      }
+
+      h1 span {
+        color: var(--accent);
+      }
+
+      .badge-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 6px;
+        flex-wrap: wrap;
+      }
+
+      .badge {
+        font-family: var(--mono);
+        font-size: 10px;
+        padding: 3px 10px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        letter-spacing: 0.05em;
+      }
+
+      .badge.live {
+        border-color: var(--pass);
+        color: var(--pass);
+      }
+      .badge.live::before {
+        content: "● ";
+      }
+
+      /* ── NAV TABS ── */
+      nav.tabs {
+        display: flex;
+        gap: 2px;
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      .tab-btn {
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 10px 18px 12px;
+        cursor: pointer;
+        color: var(--text-dim);
+        border: none;
+        background: none;
+        border-bottom: 2px solid transparent;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
+        white-space: nowrap;
+      }
+
+      .tab-btn:hover {
+        color: var(--text);
+      }
+      .tab-btn.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+
+      /* ── MAIN ── */
+      main {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 40px 24px 80px;
+      }
+
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+
+      /* ── SECTION TITLE ── */
+      .section-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--accent);
         margin-bottom: 10px;
       }
 
       h2 {
-        margin-top: 40px;
-        color: #cfcfcf;
-        font-size: 22px;
+        font-family: var(--mono);
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-bright);
+        margin-bottom: 16px;
       }
 
+      h3 {
+        font-family: var(--mono);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-bright);
+        margin-bottom: 10px;
+      }
+
+      /* ── CARD ── */
       .card {
-        background: #1a1a1d;
-        padding: 18px;
-        border-radius: 10px;
-        margin-top: 18px;
-        border: 1px solid #2a2a2a;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 24px;
+        margin-bottom: 16px;
       }
 
-      .block {
-        background: #111;
-        padding: 12px;
-        border-left: 3px solid #00ffcc;
-        font-family: monospace;
-        white-space: pre;
-        overflow-x: auto;
-        margin-top: 10px;
+      .card + .card {
       }
 
-      code {
-        background: #2a2a2a;
-        padding: 2px 6px;
+      /* ── COMPARISON GRID ── */
+      .compare-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .compare-col {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 16px;
+      }
+
+      .compare-col h4 {
+        font-family: var(--mono);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--text-dim);
+        margin-bottom: 12px;
+      }
+
+      .compare-col.highlight {
+        border-color: var(--accent);
+      }
+      .compare-col.highlight h4 {
+        color: var(--accent);
+      }
+
+      /* ── ICON LIST ── */
+      ul.icon-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      ul.icon-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 6px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+      }
+
+      ul.icon-list li:last-child {
+        border-bottom: none;
+      }
+
+      ul.icon-list li .li-icon {
+        font-size: 12px;
+        color: var(--accent);
+        margin-top: 4px;
+        flex-shrink: 0;
+      }
+
+      /* ── CODE BLOCK ── */
+      .code-wrap {
+        background: #060a0f;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        margin-top: 12px;
+      }
+
+      .code-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 16px;
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .code-lang {
+        font-family: var(--mono);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--text-dim);
+      }
+
+      .copy-btn {
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        background: none;
+        border: 1px solid var(--border);
         border-radius: 4px;
-        color: #00ffcc;
+        padding: 4px 10px;
+        cursor: pointer;
+        transition:
+          color 0.2s,
+          border-color 0.2s;
       }
 
-      .tag {
-        color: #00ffcc;
-        font-weight: bold;
+      .copy-btn:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .copy-btn.copied {
+        color: var(--pass);
+        border-color: var(--pass);
+      }
+
+      pre {
+        margin: 0;
+        padding: 20px 24px;
+        overflow-x: auto;
+        font-family: var(--mono);
+        font-size: 13px;
+        line-height: 1.7;
+        color: #c9d6e3;
+        tab-size: 2;
+      }
+
+      /* syntax highlight colours */
+      .kw {
+        color: #7b5ea7;
+      } /* keyword / directive */
+      .ty {
+        color: #00b4d8;
+      } /* type name */
+      .fn {
+        color: #00e5ff;
+      } /* method / rpc name */
+      .st {
+        color: #a8d8a8;
+      } /* string */
+      .cm {
+        color: #3d5060;
+        font-style: italic;
+      } /* comment */
+      .nu {
+        color: #f59e0b;
+      } /* number */
+      .pu {
+        color: #5a7080;
+      } /* punctuation */
+
+      /* ── STEP LIST ── */
+      ol.step-list {
+        list-style: none;
+        padding: 0;
+        counter-reset: step;
+      }
+
+      ol.step-list li {
+        counter-increment: step;
+        display: grid;
+        grid-template-columns: 28px 1fr;
+        gap: 12px;
+        align-items: baseline;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      ol.step-list li:last-child {
+        border-bottom: none;
+      }
+
+      ol.step-list li::before {
+        content: counter(step, decimal-leading-zero);
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--accent);
+        padding-top: 2px;
+      }
+
+      ol.step-list li strong {
+        color: var(--text-bright);
+      }
+
+      ol.step-list li .mono-tag {
+        vertical-align: middle;
+      }
+
+      .mono-tag {
+        font-family: var(--mono);
+        font-size: 12px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 1px 7px;
+        color: var(--accent);
+      }
+
+      /* ── STATUS PILLS ── */
+      .pill-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+      }
+
+      .pill {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 5px 14px;
+        border-radius: 4px;
+        letter-spacing: 0.08em;
+      }
+
+      .pill.pass {
+        background: rgba(34, 197, 94, 0.12);
+        border: 1px solid var(--pass);
+        color: var(--pass);
+      }
+      .pill.fail {
+        background: rgba(239, 68, 68, 0.12);
+        border: 1px solid var(--fail);
+        color: var(--fail);
+      }
+      .pill.warn {
+        background: rgba(245, 158, 11, 0.12);
+        border: 1px solid var(--warn);
+        color: var(--warn);
+      }
+
+      /* ── ENDPOINT CARD ── */
+      .endpoint-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .endpoint-row:last-child {
+        border-bottom: none;
+      }
+
+      .endpoint-service {
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--text-bright);
+        min-width: 150px;
+      }
+
+      .endpoint-addr {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--accent);
+      }
+
+      .endpoint-port {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text-dim);
+        margin-left: auto;
+      }
+
+      /* ── STATUS CODE TABLE ── */
+      .status-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      .status-table th {
+        font-family: var(--mono);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--text-dim);
+        text-align: left;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .status-table td {
+        padding: 11px 12px;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+
+      .status-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .status-table tr:hover td {
+        background: var(--surface2);
+      }
+
+      .status-code {
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .status-code.ok {
+        color: var(--pass);
+      }
+      .status-code.err {
+        color: var(--fail);
+      }
+      .status-code.warn {
+        color: var(--warn);
+      }
+
+      /* ── STREAMING TYPES ── */
+      .stream-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .stream-card {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 16px;
+      }
+
+      .stream-card h4 {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text-bright);
+        margin-bottom: 6px;
+      }
+
+      .stream-card p {
+        font-size: 13px;
+        color: var(--text-dim);
+        margin-bottom: 8px;
+      }
+
+      .stream-diagram {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--accent);
+        letter-spacing: 0.05em;
+      }
+
+      /* ── BLACKLIST TABLE ── */
+      .email-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .email-list li {
+        font-family: var(--mono);
+        font-size: 13px;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .email-list li:last-child {
+        border-bottom: none;
+      }
+      .email-list li::before {
+        content: "✗";
+        color: var(--fail);
+        font-weight: 700;
+      }
+
+      /* ── CALL-OUT ── */
+      .callout {
+        display: flex;
+        gap: 14px;
+        background: rgba(0, 229, 255, 0.04);
+        border: 1px solid rgba(0, 229, 255, 0.2);
+        border-radius: 6px;
+        padding: 16px 20px;
+        margin-top: 14px;
+        font-size: 14px;
+      }
+
+      .callout .callout-icon {
+        color: var(--accent);
+        font-size: 16px;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+
+      /* ── RESPONSIVE ── */
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 20px;
+        }
+        .compare-grid {
+          grid-template-columns: 1fr;
+        }
+        .stream-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        pre {
+          font-size: 12px;
+          padding: 14px 16px;
+        }
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <h1>gRPC QA Test Lab</h1>
-
-      <p>
-        Minimal gRPC service for QA testing, contract validation, and learning
-        microservice communication.
-      </p>
-
-      <!-- OVERVIEW -->
-      <div class="card">
-        <h2>📦 Services</h2>
-
-        <div class="block">UserService BlacklistService</div>
-
-        <p>
-          This system contains two microservices communicating via
-          <span class="tag">gRPC</span>.
-        </p>
-      </div>
-
-      <!-- ENDPOINTS -->
-      <div class="card">
-        <h2>🌐 Endpoints</h2>
-
-        <div class="block">
-          UserService → localhost:50051 BlacklistService → localhost:50052
-        </div>
-
-        <p>No HTTP endpoints. Communication is protocol-buffer based (gRPC).</p>
-      </div>
-
-      <!-- METHODS -->
-      <div class="card">
-        <h2>📡 Methods (RPC Calls)</h2>
-
-        <div class="block">
-          UserService: GetUser(UserRequest) returns (UserResponse)
-          BlacklistService: CheckBlacklist(BlacklistRequest) returns
-          (BlacklistResponse)
+    <header>
+      <div class="header-inner">
+        <div class="logo-block">
+          <span class="logo-eyebrow">QA Engineering · Protocol Buffers</span>
+          <h1>grpc<span>.</span>qa<span>—</span>lab</h1>
+          <div class="badge-row">
+            <span class="badge live">services running</span>
+            <span class="badge">proto3</span>
+            <span class="badge">HTTP/2</span>
+            <span class="badge">Postman ready</span>
+          </div>
         </div>
       </div>
 
-      <!-- MESSAGES -->
-      <div class="card">
-        <h2>📨 Messages (Schema)</h2>
+      <nav class="tabs">
+        <button class="tab-btn active" data-panel="intro">What is gRPC</button>
+        <button class="tab-btn" data-panel="test">How to Test</button>
+        <button class="tab-btn" data-panel="proto">.proto Contract</button>
+        <button class="tab-btn" data-panel="codes">Status Codes</button>
+      </nav>
+    </header>
 
-        <div class="block">
-          UserRequest: email (string) UserResponse: email (string) status
-          (string) BlacklistRequest: email (string) BlacklistResponse: blocked
-          (bool)
+    <main>
+      <!-- ══ TAB 1 · INTRO ══ -->
+      <section class="tab-panel active" id="panel-intro">
+        <div class="card">
+          <div class="section-label">Protocol Overview</div>
+          <h2>What is gRPC?</h2>
+          <p>
+            gRPC is an open-source RPC framework built on HTTP/2. Instead of
+            calling URLs with JSON bodies, clients call
+            <strong>methods</strong> defined in a
+            <strong>.proto contract</strong>. Messages are serialized with
+            Protocol Buffers — a binary format that's smaller and faster to
+            parse than JSON.
+          </p>
+
+          <div class="compare-grid" style="margin-top: 20px">
+            <div class="compare-col">
+              <h4>REST API</h4>
+              <ul class="icon-list">
+                <li>
+                  <span class="li-icon"><i class="fa-solid fa-xmark"></i></span
+                  >URL endpoints &amp; HTTP verbs
+                </li>
+                <li>
+                  <span class="li-icon"><i class="fa-solid fa-xmark"></i></span
+                  >JSON text format
+                </li>
+                <li>
+                  <span class="li-icon"><i class="fa-solid fa-xmark"></i></span
+                  >Swagger / OpenAPI docs
+                </li>
+                <li>
+                  <span class="li-icon"><i class="fa-solid fa-xmark"></i></span
+                  >HTTP/1.1 by default
+                </li>
+              </ul>
+            </div>
+            <div class="compare-col highlight">
+              <h4>gRPC</h4>
+              <ul class="icon-list">
+                <li>
+                  <span class="li-icon"><i class="fa-solid fa-check"></i></span
+                  >Named methods in .proto
+                </li>
+                <li>
+                  <span class="li-icon"><i class="fa-solid fa-check"></i></span
+                  >Binary Protocol Buffers
+                </li>
+                <li>
+                  <span class="li-icon"><i class="fa-solid fa-check"></i></span
+                  >.proto file is the contract
+                </li>
+                <li>
+                  <span class="li-icon"><i class="fa-solid fa-check"></i></span
+                  >HTTP/2 multiplexing
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <!-- TESTING -->
-      <div class="card">
-        <h2>🧪 How to Test</h2>
+        <div class="card">
+          <div class="section-label">Streaming Types</div>
+          <h2>Four Call Patterns</h2>
+          <p>
+            gRPC supports four call types. QA must know which pattern a method
+            uses — it determines how you structure your test.
+          </p>
 
-        <div class="block">
-          Step 1: Import testlab.proto into Postman (gRPC) Step 2: Select
-          method: UserService / GetUser Step 3: Request: { "email":
-          "bad@email.com" } Step 4: Expected response: { "email":
-          "bad@email.com", "status": "BLOCKED" }
+          <div class="stream-grid">
+            <div class="stream-card">
+              <h4>Unary</h4>
+              <p>One request, one response. The most common pattern.</p>
+              <div class="stream-diagram">
+                client ──▶ server<br />client ◀── server
+              </div>
+            </div>
+            <div class="stream-card">
+              <h4>Server Streaming</h4>
+              <p>One request, many responses streamed back.</p>
+              <div class="stream-diagram">
+                client ──▶ server<br />client ◀═══ server
+              </div>
+            </div>
+            <div class="stream-card">
+              <h4>Client Streaming</h4>
+              <p>Many requests sent, one final response.</p>
+              <div class="stream-diagram">
+                client ═══▶ server<br />client ◀── server
+              </div>
+            </div>
+            <div class="stream-card">
+              <h4>Bidirectional</h4>
+              <p>Both sides stream simultaneously.</p>
+              <div class="stream-diagram">
+                client ═══▶ server<br />client ◀═══ server
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
 
-      <!-- BEHAVIOR -->
-      <div class="card">
-        <h2>⚙️ Service Behavior</h2>
+        <div class="card">
+          <div class="section-label">Service Map</div>
+          <h2>Live Endpoints</h2>
 
-        <div class="block">
-          If email is in blacklist: → BLOCKED If email is NOT in blacklist: →
-          ACTIVE Validation is handled by BlacklistService via internal gRPC
-          call.
+          <div class="endpoint-row">
+            <span class="endpoint-service">UserService</span>
+            <span class="endpoint-addr">grpc.malikova.org</span>
+            <span class="endpoint-port">:50051</span>
+          </div>
+          <div class="endpoint-row">
+            <span class="endpoint-service">BlacklistService</span>
+            <span class="endpoint-addr">grpc.malikova.org</span>
+            <span class="endpoint-port">:50052</span>
+          </div>
+
+          <div class="callout">
+            <span class="callout-icon"
+              ><i class="fa-solid fa-circle-info"></i
+            ></span>
+            <span
+              >gRPC does not use URL paths. You connect to the host:port and
+              call a method by name — the service and method are encoded in the
+              HTTP/2 frame, not the URL.</span
+            >
+          </div>
         </div>
-      </div>
+      </section>
 
-      <!-- ERROR CASES -->
-      <div class="card">
-        <h2>⚠️ Negative Scenarios</h2>
+      <!-- ══ TAB 2 · HOW TO TEST ══ -->
+      <section class="tab-panel" id="panel-test">
+        <div class="card">
+          <div class="section-label">Postman Setup</div>
+          <h2>Testing with Postman</h2>
 
-        <div class="block">
-          Empty email: → validation error Service unavailable: → UNAVAILABLE
-          error Invalid request structure: → proto mismatch error
+          <ol class="step-list">
+            <li>
+              <span
+                >Open Postman → click <strong>New</strong> → select
+                <strong>gRPC Request</strong></span
+              >
+            </li>
+            <li>
+              <span
+                >Enter server URL:
+                <span class="mono-tag">grpc.malikova.org:50051</span></span
+              >
+            </li>
+            <li>
+              <span
+                >Click <strong>Import a .proto file</strong> → select
+                <span class="mono-tag">testlab.proto</span></span
+              >
+            </li>
+            <li>
+              <span
+                >Pick method from dropdown:
+                <span class="mono-tag">UserService / GetUser</span></span
+              >
+            </li>
+            <li>
+              <span
+                >Paste the request body below and click
+                <strong>Invoke</strong></span
+              >
+            </li>
+            <li>
+              <span>Validate the response against the expected result</span>
+            </li>
+          </ol>
         </div>
-      </div>
 
-      <!-- LEARNING -->
-      <div class="card">
-        <h2>📚 QA Focus</h2>
+        <div class="card">
+          <div class="section-label">Blacklist Dataset</div>
+          <h2>Test Data</h2>
+          <p>
+            These emails are hardcoded in the blacklist. Use them to verify the
+            <span class="mono-tag">CheckBlacklist</span> method returns the
+            correct status.
+          </p>
 
-        <div class="block">
-          - Contract-based testing (.proto) - Microservice dependency validation
-          - gRPC communication flow - Data integrity across services
+          <ul class="email-list" style="margin-top: 16px">
+            <li>bad@email.com</li>
+            <li>spam@test.com</li>
+          </ul>
+
+          <div class="callout" style="margin-top: 16px">
+            <span class="callout-icon"
+              ><i class="fa-solid fa-lightbulb"></i
+            ></span>
+            <span
+              >Also test with a valid address like
+              <strong>user@example.com</strong> to confirm
+              <code class="mono-tag">blocked: false</code> is returned for
+              allowed emails.</span
+            >
+          </div>
         </div>
-      </div>
-    </div>
+
+        <div class="card">
+          <div class="section-label">Blocked Email Test</div>
+          <h2>Request</h2>
+
+          <div class="code-wrap">
+            <div class="code-header">
+              <span class="code-lang">JSON · BlacklistRequest</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre>{ <span class="st">"email"</span>: <span class="st">"bad@email.com"</span> }</pre>
+          </div>
+
+          <h2 style="margin-top: 24px">Expected Response</h2>
+
+          <div class="code-wrap">
+            <div class="code-header">
+              <span class="code-lang">JSON · BlacklistResponse</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre>{ <span class="st">"blocked"</span>: <span class="kw">true</span> }</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Pass / Fail Rules</div>
+          <h2>Test Verdict</h2>
+
+          <table class="status-table" style="margin-top: 8px">
+            <thead>
+              <tr>
+                <th>Condition</th>
+                <th>Expected field</th>
+                <th>Verdict</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Email is in blacklist</td>
+                <td><code class="mono-tag">blocked: true</code></td>
+                <td><span class="pill pass">PASS</span></td>
+              </tr>
+              <tr>
+                <td>Email is NOT in blacklist</td>
+                <td><code class="mono-tag">blocked: false</code></td>
+                <td><span class="pill pass">PASS</span></td>
+              </tr>
+              <tr>
+                <td>
+                  Blacklisted email returns <code class="mono-tag">false</code>
+                </td>
+                <td>—</td>
+                <td><span class="pill fail">FAIL</span></td>
+              </tr>
+              <tr>
+                <td>Empty <code class="mono-tag">email</code> field sent</td>
+                <td>
+                  gRPC status <code class="mono-tag">INVALID_ARGUMENT</code>
+                </td>
+                <td><span class="pill warn">CHECK</span></td>
+              </tr>
+              <tr>
+                <td>Service unreachable</td>
+                <td>gRPC status <code class="mono-tag">UNAVAILABLE</code></td>
+                <td><span class="pill fail">FAIL</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ TAB 3 · PROTO ══ -->
+      <section class="tab-panel" id="panel-proto">
+        <div class="card">
+          <div class="section-label">Contract File</div>
+          <h2>testlab.proto</h2>
+          <p>
+            The .proto file is the single source of truth. It replaces Swagger.
+            Before writing any test you must read this file and understand every
+            message field and its type.
+          </p>
+
+          <div class="code-wrap" style="margin-top: 16px">
+            <div class="code-header">
+              <span class="code-lang">Protocol Buffers · proto3</span>
+              <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <pre><span class="kw">syntax</span> = <span class="st">"proto3"</span>;
+
+<span class="kw">package</span> testlab;
+
+<span class="cm">// ── UserService ─────────────────────────────</span>
+
+<span class="kw">service</span> <span class="ty">UserService</span> {
+  <span class="kw">rpc</span> <span class="fn">GetUser</span> (<span class="ty">UserRequest</span>) <span class="kw">returns</span> (<span class="ty">UserResponse</span>);
+}
+
+<span class="kw">message</span> <span class="ty">UserRequest</span> {
+  <span class="ty">string</span> email = <span class="nu">1</span>;
+}
+
+<span class="kw">message</span> <span class="ty">UserResponse</span> {
+  <span class="ty">string</span> email  = <span class="nu">1</span>;
+  <span class="ty">string</span> status = <span class="nu">2</span>;  <span class="cm">// "ACTIVE" | "BLOCKED"</span>
+}
+
+<span class="cm">// ── BlacklistService ─────────────────────────</span>
+
+<span class="kw">service</span> <span class="ty">BlacklistService</span> {
+  <span class="kw">rpc</span> <span class="fn">CheckBlacklist</span> (<span class="ty">BlacklistRequest</span>) <span class="kw">returns</span> (<span class="ty">BlacklistResponse</span>);
+}
+
+<span class="kw">message</span> <span class="ty">BlacklistRequest</span> {
+  <span class="ty">string</span> email = <span class="nu">1</span>;
+}
+
+<span class="kw">message</span> <span class="ty">BlacklistResponse</span> {
+  <span class="ty">bool</span> blocked = <span class="nu">1</span>;
+}</pre>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Reading the Contract</div>
+          <h2>How QA Uses a .proto File</h2>
+
+          <ol class="step-list">
+            <li>
+              <span
+                ><strong>Find the service</strong> — the
+                <span class="mono-tag">service</span> block names what you're
+                connecting to. This maps to the server address.</span
+              >
+            </li>
+            <li>
+              <span
+                ><strong>Find the method</strong> — each
+                <span class="mono-tag">rpc</span> line is a callable method.
+                This is what you select in Postman.</span
+              >
+            </li>
+            <li>
+              <span
+                ><strong>Read the request message</strong> — every field listed
+                is what you send. The number (<span class="mono-tag">= 1</span>)
+                is the field tag — used internally by protobuf, not by
+                you.</span
+              >
+            </li>
+            <li>
+              <span
+                ><strong>Read the response message</strong> — these are the
+                fields you assert on in your test. Check name, type, and
+                expected value.</span
+              >
+            </li>
+            <li>
+              <span
+                ><strong>Check field types</strong> —
+                <span class="mono-tag">string</span>,
+                <span class="mono-tag">bool</span>,
+                <span class="mono-tag">int32</span>,
+                <span class="mono-tag">repeated</span>, etc. A type mismatch is
+                a valid bug to report.</span
+              >
+            </li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Field Type Reference</div>
+          <h2>Common Proto3 Types</h2>
+
+          <table class="status-table" style="margin-top: 8px">
+            <thead>
+              <tr>
+                <th>Proto type</th>
+                <th>Maps to</th>
+                <th>Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="mono-tag">string</span></td>
+                <td>UTF-8 text</td>
+                <td>
+                  <code
+                    style="
+                      font-family: var(--mono);
+                      font-size: 12px;
+                      color: #a8d8a8;
+                    "
+                    >"user@example.com"</code
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td><span class="mono-tag">bool</span></td>
+                <td>true / false</td>
+                <td>
+                  <code
+                    style="
+                      font-family: var(--mono);
+                      font-size: 12px;
+                      color: #7b5ea7;
+                    "
+                    >true</code
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td><span class="mono-tag">int32</span></td>
+                <td>Integer number</td>
+                <td>
+                  <code
+                    style="
+                      font-family: var(--mono);
+                      font-size: 12px;
+                      color: #f59e0b;
+                    "
+                    >42</code
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td><span class="mono-tag">repeated</span></td>
+                <td>Array / list</td>
+                <td>
+                  <code
+                    style="
+                      font-family: var(--mono);
+                      font-size: 12px;
+                      color: #c9d6e3;
+                    "
+                    >["a", "b"]</code
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td><span class="mono-tag">enum</span></td>
+                <td>Named constants</td>
+                <td>
+                  <code
+                    style="
+                      font-family: var(--mono);
+                      font-size: 12px;
+                      color: #00b4d8;
+                    "
+                    >STATUS_ACTIVE</code
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══ TAB 4 · STATUS CODES ══ -->
+      <section class="tab-panel" id="panel-codes">
+        <div class="card">
+          <div class="section-label">gRPC Status Codes</div>
+          <h2>What to Assert On</h2>
+          <p>
+            Every gRPC response carries a status code — not HTTP 200/404, but
+            gRPC's own code system. A passing test must validate both the
+            <strong>response body</strong> and the <strong>status code</strong>.
+          </p>
+        </div>
+
+        <div class="card">
+          <table class="status-table">
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Name</th>
+                <th>When to expect it</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="status-code ok">0</span></td>
+                <td><span class="mono-tag">OK</span></td>
+                <td>
+                  Request succeeded. Always assert this on happy-path tests.
+                </td>
+              </tr>
+              <tr>
+                <td><span class="status-code err">1</span></td>
+                <td><span class="mono-tag">CANCELLED</span></td>
+                <td>Client cancelled the request before completion.</td>
+              </tr>
+              <tr>
+                <td><span class="status-code err">2</span></td>
+                <td><span class="mono-tag">UNKNOWN</span></td>
+                <td>Server threw an unhandled exception. Typically a bug.</td>
+              </tr>
+              <tr>
+                <td><span class="status-code warn">3</span></td>
+                <td><span class="mono-tag">INVALID_ARGUMENT</span></td>
+                <td>
+                  Sent a field with a bad value (wrong format, empty required
+                  field). Test this on negative cases.
+                </td>
+              </tr>
+              <tr>
+                <td><span class="status-code warn">4</span></td>
+                <td><span class="mono-tag">DEADLINE_EXCEEDED</span></td>
+                <td>
+                  Response did not arrive within the client timeout. Useful for
+                  performance tests.
+                </td>
+              </tr>
+              <tr>
+                <td><span class="status-code err">5</span></td>
+                <td><span class="mono-tag">NOT_FOUND</span></td>
+                <td>
+                  Requested entity doesn't exist. Test with an unknown email/ID.
+                </td>
+              </tr>
+              <tr>
+                <td><span class="status-code err">6</span></td>
+                <td><span class="mono-tag">ALREADY_EXISTS</span></td>
+                <td>
+                  Attempt to create something that already exists. Common in
+                  create/register flows.
+                </td>
+              </tr>
+              <tr>
+                <td><span class="status-code err">7</span></td>
+                <td><span class="mono-tag">PERMISSION_DENIED</span></td>
+                <td>
+                  Caller is authenticated but not authorized for this action.
+                </td>
+              </tr>
+              <tr>
+                <td><span class="status-code err">13</span></td>
+                <td><span class="mono-tag">INTERNAL</span></td>
+                <td>
+                  Serious internal server error. Always a defect to report.
+                </td>
+              </tr>
+              <tr>
+                <td><span class="status-code err">14</span></td>
+                <td><span class="mono-tag">UNAVAILABLE</span></td>
+                <td>
+                  Service is down or unreachable. Check infra before reporting
+                  code bug.
+                </td>
+              </tr>
+              <tr>
+                <td><span class="status-code err">16</span></td>
+                <td><span class="mono-tag">UNAUTHENTICATED</span></td>
+                <td>
+                  Missing or invalid token / credentials. Test with and without
+                  auth headers.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout" style="margin-top: 16px">
+            <span class="callout-icon"
+              ><i class="fa-solid fa-triangle-exclamation"></i
+            ></span>
+            <span
+              >Code <strong>2 UNKNOWN</strong> and
+              <strong>13 INTERNAL</strong> coming from a production service are
+              always bugs. Log them immediately — they mean the server crashed
+              or hit an unhandled exception.</span
+            >
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">Negative Test Examples</div>
+          <h2>What to Test Beyond Happy Path</h2>
+
+          <ol class="step-list">
+            <li>
+              <span
+                ><strong>Empty required field</strong> — send
+                <span class="mono-tag">{ "email": "" }</span>. Expect
+                <span class="mono-tag">INVALID_ARGUMENT</span>.</span
+              >
+            </li>
+            <li>
+              <span
+                ><strong>Malformed email</strong> — send
+                <span class="mono-tag">{ "email": "notanemail" }</span>. Expect
+                <span class="mono-tag">INVALID_ARGUMENT</span> or a
+                business-level error.</span
+              >
+            </li>
+            <li>
+              <span
+                ><strong>Unknown user</strong> — send a valid-format email that
+                doesn't exist in the system. Expect
+                <span class="mono-tag">NOT_FOUND</span> or
+                <span class="mono-tag">blocked: false</span>.</span
+              >
+            </li>
+            <li>
+              <span
+                ><strong>Missing metadata / auth header</strong> — omit any
+                required token. Expect
+                <span class="mono-tag">UNAUTHENTICATED</span>.</span
+              >
+            </li>
+            <li>
+              <span
+                ><strong>Duplicate registration</strong> — if a create method
+                exists, call it twice with the same data. Expect
+                <span class="mono-tag">ALREADY_EXISTS</span>.</span
+              >
+            </li>
+          </ol>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // ── Tab switching ──
+      const tabBtns = document.querySelectorAll(".tab-btn");
+      const tabPanels = document.querySelectorAll(".tab-panel");
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          tabBtns.forEach((b) => b.classList.remove("active"));
+          tabPanels.forEach((p) => p.classList.remove("active"));
+          btn.classList.add("active");
+          document
+            .getElementById("panel-" + btn.dataset.panel)
+            .classList.add("active");
+        });
+      });
+
+      // ── Copy button ──
+      function copyCode(btn) {
+        const pre = btn.closest(".code-wrap").querySelector("pre");
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+          btn.textContent = "Copied!";
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.textContent = "Copy";
+            btn.classList.remove("copied");
+          }, 2000);
+        });
+      }
+    </script>
   </body>
 </html>
